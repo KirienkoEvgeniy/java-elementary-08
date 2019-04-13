@@ -1,44 +1,53 @@
 package org.demo.birds.store;
+
 import org.demo.birds.entities.Bird;
 
-import javax.naming.Name;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 /**
  * Отнаследоваться от AbstractBirdStore.
- *
+ * <p>
  * Реализовать паттерн Singleton.
  */
-public class BirdStore extends AbstractBirdStore{
-//    public final static BirdStore BIRD_STORE = new BirdStore();
+public class BirdStore extends AbstractBirdStore {
+    public final static BirdStore BIRD_STORE = new BirdStore();
 
-    private ArrayList bird = new ArrayList();
-    private Map<Name, Bird> allBird;
+    private Map<String, Bird> birdByName = new HashMap<>();
+    private Map<String, List<Bird>> birdByArea = new HashMap<>();
 
-//    public static BirdStore birdStore() {
-//        return BIRD_STORE;
-//    }
+    public static BirdStore birdStore() {
+        return BIRD_STORE;
+    }
+
+    private BirdStore() {
+
+    }
 
     @Override
     public void addBird(Bird b) {
-        if (b.equals(bird)) {
+        if (birdByName.containsKey(b.getName())) {
             System.out.println("Bird With name .... already exists");
-        } else bird.add(b);
+        } else {
+            birdByName.putIfAbsent(b.getName(), b);
+            //если ареал существует в хранилище, то добавляем птицу в список
+            if (birdByArea.containsKey(b.getLivingArea())) {
+                List<Bird> birds = birdByArea.get(b.getLivingArea());
+                birds.add(b);
+            } else {
+                birdByArea.put(b.getLivingArea(), new ArrayList<Bird>(Collections.singletonList(b)));
+            }
+
+        }
     }
 
     @Override
     public Bird searchByName(String nameToSearch) {
-        if(allBird.keySet().equals(nameToSearch)){
-            return new Bird();
-        }
-
-        return null;
+        return birdByName.get(nameToSearch);
     }
 
     @Override
     public List searchByLivingArea(String livingAreaToFind) {
-        return null;
+        return birdByArea.get(livingAreaToFind);
     }
 
 }

@@ -47,4 +47,14 @@ public class Bird {
     public void setSize(Double size) {
         this.size = size;
     }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("Bird{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", livingArea='").append(livingArea).append('\'');
+        sb.append(", size=").append(size);
+        sb.append('}');
+        return sb.toString();
+    }
 }
